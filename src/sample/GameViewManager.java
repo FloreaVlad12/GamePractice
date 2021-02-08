@@ -108,7 +108,7 @@ public class GameViewManager {
                 fireArrow();
                 updateCurrentTime();
                 //createEnemyShip();
-
+                
             }
         };
         gameTimer.start();

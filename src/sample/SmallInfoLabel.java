@@ -42,7 +42,7 @@ public class SmallInfoLabel extends Label {
         try {
             setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)),15));
         } catch (FileNotFoundException e) {
-            setFont(Font.font("Veranda",15));
+            setFont(Font.font("Veranda",16));
         }
     }
 
