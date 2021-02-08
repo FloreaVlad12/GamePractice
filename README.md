@@ -6,3 +6,8 @@ JavaFX으로 연습을 위한 만든 게임
 
 !!!!!!중요공지!!!!!!
 이 게임을 만들면서 유투브에 있는 안내들을 따랐다. 그래서 이 코드는 제가 완전히 쓴 코드가 아니다! 그렇지만 제가 유투브 동영상으로 알게 된 것을 이용할 때 어떤 부분을 스스로 썼다. 모든 코드가 다른 분한테서 복사한 것이 아니다.
+
+게임 하는 방법:
+
+이 게임에서는 Q 사용으로 쏠 수 있고 왼 키나 오른 키 사용으로 움직일 수 있고 별 수거로 더 점을 벌 수 있고 특별한 파워-업 수거로 쏘는 속도 늘릴 수 있다. 그리고 게임의 어려움도 선택하기도 할 수 있다 (shoot with Q, move with keypad, colect stars for more points, collect powerups for more attack speed and change the difficulty level from the menu)
+
