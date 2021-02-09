@@ -62,7 +62,7 @@ public class GameViewManager {
     private ArrayList<Arrow> arrows;
     private boolean isSpacePressed;
 
-    private long timeOfFire=0, currentTime;
+    private long timeOfFire=0, currentTime, startTime;
     private long allowedTimeOfFire=700; //attack speed
 
     protected GameSubScene gameOverSubScene;
@@ -73,15 +73,17 @@ public class GameViewManager {
     private ImageView attackSpeedPowerUp;
     private final static int POWERUP_RADIUS = 11;
 
-    private final static long enemyShipSpawnDelay = 90;
+    private final static long enemyShipSpawnDelay = 4000;
     private boolean isEnemyShipOnMap=false;
-    private ImageView enemyShip;
+    private EnemyShip enemyShip;
+    private final static int ENEMY_SHIP_RADIUS = 25;
 
 
     public GameViewManager(){
         initializeStage();
         createKeyListeners();
         randomPositionGenerator = new Random();
+        //enemyShip = new EnemyShip();
     }
 
     public void createNewGame(Stage menuStage, SHIP chosenShip){
@@ -90,8 +92,10 @@ public class GameViewManager {
         createBackground();
         createShip(chosenShip);
         createGameElements(chosenShip);
+        startTime = System.currentTimeMillis();
         createGameLoop();
         gameStage.show();
+
         System.out.println("Difficulty: "+gameDifficulty);
 
     }
@@ -107,8 +111,8 @@ public class GameViewManager {
                 checkIfElementsCollide();
                 fireArrow();
                 updateCurrentTime();
-                //createEnemyShip();
-                
+              //  createEnemyShip();
+
             }
         };
         gameTimer.start();
@@ -129,6 +133,8 @@ public class GameViewManager {
         gamePane.getChildren().add(attackSpeedPowerUp);
         setNewElementPosition(attackSpeedPowerUp);
 
+        enemyShip = new EnemyShip();
+        createEnemyShip();
 
         for(int i=0;i<playerLifes.length;i++){
             playerLifes[i] = new ImageView(chosenSHip.getUrlLife());
@@ -145,6 +151,8 @@ public class GameViewManager {
             numOfMeteors=11;
         }
 
+       // numOfMeteors=0; //disabled for testing only
+
         brownMeteors = new ImageView[numOfMeteors];
         for(int i=0;i<brownMeteors.length;i++){
             brownMeteors[i] = new ImageView(METEOR_BROWN_PATH);
@@ -160,12 +168,19 @@ public class GameViewManager {
         }
 
 
+
+
     }
 
     private void setNewElementPosition(ImageView image){
         image.setLayoutX(randomPositionGenerator.nextInt(550));   //prev 370
         image.setLayoutY(-(randomPositionGenerator.nextInt(3200)+600));
     }
+
+
+    private boolean enemyShipReachedRightSide=false;
+    private boolean enemyShipReachedLeftSide=false;
+
 
     private void moveGameElements(){
 
@@ -184,8 +199,6 @@ public class GameViewManager {
             meteorSpeed=10;
         }
 
-
-
         for(int i=0;i<brownMeteors.length;i++){
             brownMeteors[i].setLayoutY(brownMeteors[i].getLayoutY()+meteorSpeed);
             if(gameDifficulty=="고급"){
@@ -197,6 +210,41 @@ public class GameViewManager {
             greyMeteors[i].setLayoutY(greyMeteors[i].getLayoutY()+meteorSpeed);
             greyMeteors[i].setRotate(greyMeteors[i].getRotate()+4);
         }
+
+        moveEnemyShip();
+
+
+    }
+
+    private void moveEnemyShip(){
+
+
+/*
+        if(enemyShip.getEnemyShipImageView().getLayoutX()<80){
+            enemyShipReachedLeftSide=true;
+            enemyShipReachedRightSide=false;
+        }
+        if(enemyShip.getEnemyShipImageView().getLayoutX()>450){
+            enemyShipReachedRightSide=true;
+            enemyShipReachedLeftSide=false;
+        }
+
+       // System.out.println("\nreached left: "+enemyShipReachedLeftSide+"\nreached right: "+enemyShipReachedRightSide
+      //  +"\nlayout X: "+enemyShip.getEnemyShipImageView().getLayoutX());
+
+        if(enemyShipReachedLeftSide) {
+            enemyShip.getEnemyShipImageView().setLayoutX(enemyShip.getEnemyShipImageView().getLayoutX()+2);
+
+        } else if(enemyShipReachedRightSide) {
+            enemyShip.getEnemyShipImageView().setLayoutX(enemyShip.getEnemyShipImageView().getLayoutX()-2);
+
+        } else {
+
+                enemyShip.getEnemyShipImageView().setLayoutX(enemyShip.getEnemyShipImageView().getLayoutX()-2);
+        }
+
+*/
+
     }
 
     private void checkIfElementsAreBehindTheShipAndRelocate(){
@@ -395,7 +443,6 @@ public class GameViewManager {
             pointsLabel.setText(textToSet + points);
         }
 
-
         if(SHIP_RADIUS + POWERUP_RADIUS > calculateDistance(ship.getLayoutX()+49, attackSpeedPowerUp.getLayoutX()+15,
                 ship.getLayoutY()+37, attackSpeedPowerUp.getLayoutY()+15)){
             setNewElementPosition(attackSpeedPowerUp);
@@ -439,6 +486,37 @@ public class GameViewManager {
                     }
                     pointsLabel.setText(textToSet + points);
                 }
+
+
+                    boolean colisionDetected=false;
+
+                if(ENEMY_SHIP_RADIUS + ARROW_RADIUS > calculateDistance(arrow.getArrow().getLayoutX()+5, enemyShip.getEnemyShipImageView().getLayoutX()+20,
+                        arrow.getArrow().getLayoutY()+10, enemyShip.getEnemyShipImageView().getLayoutY()+20)){
+                  /*  if( enemyShip.getEnemyShipImageView().getBoundsInParent().intersects(arrow.getArrow().getBoundsInParent())){
+                      colisionDetected=true;
+                }*/
+
+
+                        gamePane.getChildren().remove(arrow.getArrow());
+                        colisionDetected=true;
+                        System.out.println("HERE!");
+                        arrowsToRemove.add(arrow);
+                        enemyShip.setHitpoints(enemyShip.getHitpoints()-1);
+                        if(enemyShip.getHitpoints()<=0){
+                            System.out.println("Enemy ship dead!");
+                            gamePane.getChildren().remove(enemyShip.getEnemyShipImageView());
+                            //  isEnemyShipOnMap=false;
+                            points+=5;
+                            String textToSet = "점 : ";
+                            if(points<10){
+                                textToSet = textToSet + "0";
+                            }
+                            pointsLabel.setText(textToSet + points);
+                            //createEnemyShip();
+                        }
+
+                    }
+
             }
 
             for(int i=0;i<brownMeteors.length;i++){
@@ -509,28 +587,37 @@ public class GameViewManager {
     }
 
     //currentTime-timeOfFire>=allowedTimeOfFire
-  /*  private void createEnemyShip (){
-        EnemyShip enemyShip = new EnemyShip();  //this must be created OUTSIDE this method because every tick, the game creates a new object. TO BE MODIFIED!!!
-        this.enemyShip = new ImageView(new Image(EnemyShip.ENEMY_SHIP_IMAGE_PATH, 250,250,false,true));
-       // this.enemyShip = enemyShip.getEnemyShipImageView();
-        if(this.enemyShip==null){
-            System.out.println("I'm null!");
-        }
-        if(enemyShip.getEnemyShipSpawnTime()==0){
-            enemyShip.updateEnemyShipSpawnTime();
-            System.out.println("HEre" );
-        }
+    private void createEnemyShip (){
+          //this must be created OUTSIDE this method because every tick, the game creates a new object. TO BE MODIFIED!!!
 
+        //System.out.println("current time: "+ currentTime+"\nenemy ship spwn time: "+enemyShip.getEnemyShipSpawnTime());
+        //if(isEnemyShipOnMap==false && currentTime-enemyShip.getEnemyShipSpawnTime()>=enemyShipSpawnDelay){
+            System.out.println("Enemy ship created\n"+"current time: "+ currentTime+"\nenemy ship spwn time: "+enemyShip.getEnemyShipSpawnTime());
+            enemyShip = new EnemyShip();
+            enemyShip.getEnemyShipImageView().setLayoutX(randomPositionGenerator.nextInt(650));
+            enemyShip.getEnemyShipImageView().setLayoutY(200);
+            gamePane.getChildren().add(enemyShip.getEnemyShipImageView());
+            isEnemyShipOnMap = true;
+            enemyShip.updateEnemyShipSpawnTime();
+      //  }
+    }
+
+
+    private void createEnemyShipFirstTime (){
+        //this must be created OUTSIDE this method because every tick, the game creates a new object. TO BE MODIFIED!!!
+
+       // System.out.println("current time: "+ currentTime+"\nenemy ship spwn time: "+enemyShip.getEnemyShipSpawnTime());
         if(isEnemyShipOnMap==false && currentTime-enemyShip.getEnemyShipSpawnTime()>=enemyShipSpawnDelay){
-            System.out.println("current time: "+ currentTime+"\nenemy ship spwn time: "+enemyShip.getEnemyShipSpawnTime());
-            this.enemyShip.setLayoutX(randomPositionGenerator.nextInt(450));
-            this.enemyShip.setLayoutY(10);
-            gamePane.getChildren().add(this.enemyShip);
+            System.out.println("Enemy ship created\n"+"current time: "+ currentTime+"\nenemy ship spwn time: "+enemyShip.getEnemyShipSpawnTime());
+            enemyShip = new EnemyShip();
+            enemyShip.getEnemyShipImageView().setLayoutX(randomPositionGenerator.nextInt(650));
+            enemyShip.getEnemyShipImageView().setLayoutY(200);
+            gamePane.getChildren().add(enemyShip.getEnemyShipImageView());
             isEnemyShipOnMap = true;
             enemyShip.updateEnemyShipSpawnTime();
         }
     }
-*/
+
 
 
 

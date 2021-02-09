@@ -1,7 +1,6 @@
 package sample;
 
 import javafx.animation.TranslateTransition;
-import javafx.scene.Parent;
 import javafx.scene.SubScene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
@@ -27,8 +26,8 @@ public class GameSubScene extends SubScene {
         isHidden = true;
         setLayoutX(1024);
         setLayoutY(180);
-
     }
+
 
     public void moveSubScene(){
         TranslateTransition transition = new TranslateTransition();
@@ -44,7 +43,6 @@ public class GameSubScene extends SubScene {
             isHidden=true;
 
         }
-
 
         transition.play();
     }

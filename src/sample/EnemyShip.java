@@ -11,15 +11,19 @@ public class EnemyShip {
     private long enemyShipSpawnTime;
     private int hitpoints;
     private static boolean isEnemyShipOnMap;
+    protected boolean isMoving;
 
 
 
 
-    public void EnemyShip(){
-        enemyShipImageView = new ImageView(new Image(ENEMY_SHIP_IMAGE_PATH, 120,120,false,true));
+    public  EnemyShip(){
+         enemyShipImageView = new ImageView(new Image(ENEMY_SHIP_IMAGE_PATH, 170,170,false,true));
+       // enemyShipImageView = new ImageView(ENEMY_SHIP_IMAGE_PATH);
         enemyShipSpawnTime = System.currentTimeMillis();
         hitpoints = 5;
         isEnemyShipOnMap=false;
+        isMoving = true;
+
     }
 
 

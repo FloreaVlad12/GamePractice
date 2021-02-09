@@ -31,11 +31,6 @@ public class ViewManager {
     private SHIP chosenShip;
 
 
-
-
-
-
-
     public ViewManager (){
         mainPane = new AnchorPane();
         mainStage = new Stage();
