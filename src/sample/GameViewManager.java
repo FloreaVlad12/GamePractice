@@ -602,7 +602,7 @@ public class GameViewManager {
       //  }
     }
 
-
+/*
     private void createEnemyShipFirstTime (){
         //this must be created OUTSIDE this method because every tick, the game creates a new object. TO BE MODIFIED!!!
 
@@ -617,7 +617,7 @@ public class GameViewManager {
             enemyShip.updateEnemyShipSpawnTime();
         }
     }
-
+*/
 
 
 
